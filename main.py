@@ -1,8 +1,12 @@
 from flask import Flask, jsonify
+from flask_cors import CORS, cross_origin
 from pandas import read_csv
 from content import get_recommandation
 
 app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
+
 data = read_csv("data.csv")
 liked_data = read_csv("liked.csv")
 unliked_data = read_csv("unliked.csv")
@@ -42,11 +46,13 @@ def dbg():
 
 
 @app.route("/")
+@cross_origin()
 def article():
     return data.iloc[0].to_json()
 
 
 @app.route("/liked")
+@cross_origin()
 def liked():
     article = data.iloc[0]
     try:
@@ -67,6 +73,7 @@ def liked():
 
 
 @app.route("/unliked")
+@cross_origin()
 def unliked():
     try:
         article = data.iloc[0]
@@ -87,6 +94,7 @@ def unliked():
 
 
 @app.route("/popular")
+@cross_origin()
 def popular():
     popular = []
     for item in data.head(10).iloc:
@@ -96,6 +104,7 @@ def popular():
 
 
 @app.route("/recommandation")
+@cross_origin()
 def recommandation():
     recommandation = []
     for movie in liked_data.iloc:
